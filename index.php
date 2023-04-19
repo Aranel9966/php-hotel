@@ -38,6 +38,32 @@
         ],
 
     ];
+
+    $getParking = $_GET['parking']??false;
+    $getVote = $_GET['vote']??false;
+
+    $filteredHotels=$hotels;
+
+    if($getParking){
+        $tempFilteredHotels=[];
+
+        foreach($hotels as $singolHotel){
+            if($singolHotel['parking']== true ){
+                $tempFilteredHotels[]=$singolHotel;
+            }
+        }
+        $filteredHotels=$tempFilteredHotels;
+    };
+    
+    if($getVote){
+        $tempFilteredHotels=[];
+        foreach($filteredHotels as $singolHotel){
+            if($singolHotel['vote']>= 3 ){
+                $tempFilteredHotels[]=$singolHotel;
+            }
+        }
+        $filteredHotels=$tempFilteredHotels;
+    };
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -49,6 +75,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
 </head>
 <body>
+    <form action="index.php" method="GET">
+        <input type="checkbox" id="parking" name="parking" value=true>
+        <label for="parking"> con parcheggio</label><br>
+        <input type="checkbox" id="vote" name="vote" value=true>
+        <label for="vote"> 3 stelle o più</label><br>
+        <input type="submit" value="Submit">
+    </form>
+    <hr>
     <table class="table table-dark table-striped-columns">
         <thead>
                 <?php
@@ -61,18 +95,23 @@
         </thead>
         <tbody>
             <?php
-            foreach($hotels as $hotel ){
-            ?>
+
+            foreach($filteredHotels as $hotel ){
+                ?>
                 <tr>
                     <?php
-                    foreach($hotel as $specifications){
-                    ?>
-                    <td>
-                    <?php
-                    echo "{$specifications}";
-                    };
-                    ?>
-                    </td>
+                    foreach($hotel as $chiave => $specifications){
+                        if($chiave == "parking"){
+                            if($specifications == true){
+                                echo "<td> yes </td>";
+                            }else{
+                                echo "<td> no </td>";
+                            };
+                        }else{
+                            echo "<td> {$specifications} </td>";
+                        }
+                        };
+                        ?>
                 </tr>    
             <?php
             };
